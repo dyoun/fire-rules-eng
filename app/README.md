@@ -1,89 +1,6 @@
-# Hello World RESTful API Service
+# Overview
 
-A Hello World RESTful Python Flask API service built using SOLID principles and enterprise design patterns.
-
-## Architecture Overview
-
-This application demonstrates clean architecture principles with clear separation of concerns across multiple layers.
-
-### SOLID Principles Applied
-
-- **Single Responsibility Principle (SRP)**: Each class has one reason to change
-  - `Greeting` model only handles greeting data
-  - `GreetingService` only handles business logic
-  - `GreetingRepository` only handles data access
-
-- **Open/Closed Principle (OCP)**: Open for extension, closed for modification
-  - New repository implementations can be added without changing existing code
-  - New greeting types can be added by extending the service
-
-- **Liskov Substitution Principle (LSP)**: Objects should be replaceable with instances of their subtypes
-  - `InMemoryGreetingRepository` can be replaced with any `IGreetingRepository` implementation
-
-- **Interface Segregation Principle (ISP)**: Many client-specific interfaces are better than one general-purpose interface
-  - `IGreetingRepository` and `IGreetingService` are focused, single-purpose interfaces
-
-- **Dependency Inversion Principle (DIP)**: Depend on abstractions, not concretions
-  - Services depend on repository interfaces, not concrete implementations
-  - Controllers depend on service interfaces, not concrete services
-
-### Enterprise Design Patterns
-
-- **Repository Pattern**: Abstracts data access logic (`IGreetingRepository`)
-- **Service Layer Pattern**: Encapsulates business logic (`GreetingService`)
-- **Dependency Injection**: Manages object dependencies via DI container
-- **Layered Architecture**: Clear separation between domain, application, infrastructure, and presentation layers
-
-## Project Structure
-
-```
-app/
-├── src/
-│   ├── domain/                 # Domain layer (entities, interfaces)
-│   │   ├── models/
-│   │   │   └── greeting.py     # Greeting entity
-│   │   └── interfaces/
-│   │       ├── greeting_repository.py  # Repository contract
-│   │       └── greeting_service.py     # Service contract
-│   ├── application/            # Application layer (business logic)
-│   │   └── services/
-│   │       └── greeting_service.py     # Business logic implementation
-│   ├── infrastructure/         # Infrastructure layer (data access)
-│   │   └── repositories/
-│   │       └── in_memory_greeting_repository.py  # Data access implementation
-│   ├── presentation/           # Presentation layer (API controllers)
-│   │   ├── controllers/
-│   │   │   └── greeting_controller.py  # REST API endpoints
-│   │   └── app.py             # Flask application factory
-│   └── config/                # Configuration
-│       ├── container.py       # Dependency injection container
-│       └── settings.py        # Application settings
-├── tests/                     # Test directory
-├── requirements.txt           # Python dependencies
-├── main.py                   # Application entry point
-└── README.md                 # This file
-```
-
-## API Endpoints
-
-### Health Check
-- **GET** `/health`
-  - Returns service health status
-  - Response: `{"status": "healthy", "service": "hello-world-api"}`
-
-### Greetings
-- **GET** `/api/v1/hello`
-  - Creates and returns a "Hello World!" greeting
-  - Response: `{"id": "uuid", "message": "Hello World!", "timestamp": "ISO-8601"}`
-
-- **GET** `/api/v1/greetings`
-  - Returns all stored greetings
-  - Response: Array of greeting objects
-
-- **POST** `/api/v1/greetings`
-  - Creates a custom greeting
-  - Request body: `{"message": "Your custom message"}`
-  - Response: `{"id": "uuid", "message": "Your custom message", "timestamp": "ISO-8601"}`
+Python API service to compute observations against rules.
 
 ## Installation and Setup
 
@@ -129,30 +46,120 @@ export DEBUG=true
 python main.py
 ```
 
-## Usage Examples
+## Architecture Overview
 
-### Get Hello World greeting
-```bash
-curl http://localhost:5000/api/v1/hello
+This application demonstrates clean architecture principles with clear separation of concerns across multiple layers.
+
+### SOLID Principles Applied
+
+- **Single Responsibility Principle (SRP)**: Each class has one reason to change
+  - `Greeting` model only handles greeting data
+  - `GreetingService` only handles business logic
+  - `GreetingRepository` only handles data access
+
+- **Open/Closed Principle (OCP)**: Open for extension, closed for modification
+  - New repository implementations can be added without changing existing code
+  - New greeting types can be added by extending the service
+
+- **Liskov Substitution Principle (LSP)**: Objects should be replaceable with instances of their subtypes
+  - `InMemoryGreetingRepository` can be replaced with any `IGreetingRepository` implementation
+
+- **Interface Segregation Principle (ISP)**: Many client-specific interfaces are better than one general-purpose interface
+  - `IGreetingRepository` and `IGreetingService` are focused, single-purpose interfaces
+
+- **Dependency Inversion Principle (DIP)**: Depend on abstractions, not concretions
+  - Services depend on repository interfaces, not concrete implementations
+  - Controllers depend on service interfaces, not concrete services
+
+### Enterprise Design Patterns
+
+- **Repository Pattern**: Abstracts data access logic (`IGreetingRepository`)
+- **Service Layer Pattern**: Encapsulates business logic (`GreetingService`)
+- **Dependency Injection**: Manages object dependencies via DI container
+- **Layered Architecture**: Clear separation between domain, application, infrastructure, and presentation layers
+
+## Project Structure
+
+```
+app/
+├── src/
+│   ├── domain/                 # Domain layer (entities, interfaces)
+│   │   ├── models/
+│   │   │   └── rule_evaluation.py  # Rules evaluation entities
+│   │   └── interfaces/
+│   │       ├── rules_repository.py     # Rules repository contract
+│   │       └── rules_service.py        # Rules service contract
+│   ├── application/            # Application layer (business logic)
+│   │   └── services/
+│   │       └── rules_service.py        # Rules evaluation logic
+│   ├── infrastructure/         # Infrastructure layer (data access)
+│   │   └── repositories/
+│   ├── presentation/           # Presentation layer (API controllers)
+│   │   ├── controllers/
+│   │   │   └── rules_controller.py     # Rules evaluation REST API endpoints
+│   │   └── app.py             # Flask application factory
+│   └── config/                # Configuration
+│       ├── container.py       # Dependency injection container
+│       └── settings.py        # Application settings
+├── tests/                     # Test directory
+├── fire-risk.json            # Sample rule definition
+├── observations.json         # Sample input data
+├── run-rules.ipynb          # Jupyter notebook example
+├── requirements.txt         # Python dependencies
+├── main.py                 # Application entry point
+└── README.md               # This file
 ```
 
-### Create a custom greeting
-```bash
-curl -X POST http://localhost:5000/api/v1/greetings \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello from REST API!"}'
-```
+## API Endpoints
 
-### Get all greetings
-```bash
-curl http://localhost:5000/api/v1/greetings
-```
+### Health Check
+- **GET** `/health`
+  - Returns service health status
+  - Response: `{"status": "healthy", "service": "rules-engine-api"}`
 
-### Health check
-```bash
-curl http://localhost:5000/health
-```
-
+### Rules Engine
+- **POST** `/rules/`
+  - Evaluates rules against provided observations
+  - Request body: 
+    ```json
+    {
+      "observations": {
+        "risk_type": "windows",
+        "window_type": "tempered",
+        "vegetation_type": "tree",
+        "distance": 15
+      },
+      "request_id": "optional-request-id"
+    }
+    ```
+  - Response:
+    ```json
+    {                                                                         
+      "performance": "83.7µs",                                                
+      "request_id": "test-005",                                               
+      "result": {                                                             
+        "calc_safe_distance": 15,                                             
+        "distance": 15,                                                       
+        "mitigations": {
+          "Bridge": [                                
+            "Apply a Film to windows which decreases minimum safe distance by 20%",
+            "Apply flame retardants to shrubs that decrease minimum safe distance by 25%",
+            "Prune trees to a safe height decreases safe distance by 50%"
+          ],
+          "Full": [                     
+            "Remove Vegetation",
+            "Replace window with Tempered Glass"
+          ]
+        },
+        "risk_type": "windows",
+        "safe_distance": 30,
+        "vegetation_type": "tree",
+        "window_type": "tempered"
+      },
+      "timestamp": "2025-08-24T22:37:46.022937"
+    }
+    ```
+    
 ## Dependencies
 
 - **Flask 3.0.0**: Web framework
@@ -165,7 +172,7 @@ curl http://localhost:5000/health
 2. **Testability**: Dependencies can be easily mocked for unit testing
 3. **Extensibility**: New features can be added without modifying existing code
 4. **Scalability**: Architecture supports growth and complexity
-5. **Flexibility**: Components can be swapped out (e.g., database repository instead of in-memory)
+5. **Flexibility**: Components can be swapped out (e.g., rule repository instead of in-memory)
 
 ## Future Enhancements
 
@@ -185,3 +192,9 @@ Total code changes:    452 lines added, 0 lines removed
 Usage by model:
     claude-3-5-haiku:  2.2k input, 143 output, 0 cache read, 0 cache write
        claude-sonnet:  51 input, 8.5k output, 737.2k cache read, 14.7k cache write
+
+
+## Sources
+* Rules API Service
+* [Rules UI Interface to Administer Rules](https://hub.docker.com/r/gorules/brms)
+* https://gorules.io/pricing
