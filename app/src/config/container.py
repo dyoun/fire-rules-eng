@@ -1,8 +1,10 @@
 from dependency_injector import containers, providers
 from ..domain.interfaces.greeting_repository import IGreetingRepository
 from ..domain.interfaces.greeting_service import IGreetingService
+from ..domain.interfaces.rules_service import IRulesService
 from ..infrastructure.repositories.in_memory_greeting_repository import InMemoryGreetingRepository
 from ..application.services.greeting_service import GreetingService
+from ..application.services.rules_service import RulesService
 
 
 class Container(containers.DeclarativeContainer):
@@ -11,7 +13,8 @@ class Container(containers.DeclarativeContainer):
     # Configuration
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "src.presentation.controllers.greeting_controller"
+            "src.presentation.controllers.greeting_controller",
+            "src.presentation.controllers.rules_controller"
         ]
     )
     
@@ -23,3 +26,5 @@ class Container(containers.DeclarativeContainer):
         GreetingService,
         greeting_repository=greeting_repository
     )
+    
+    rules_service = providers.Factory(RulesService)
