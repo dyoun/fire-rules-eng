@@ -3,7 +3,7 @@
 ## Quickstart
 
 Prerequisites:
-- Python 3.8+
+- Python 3.10+
 - pip
 
 Python API service for evaluating fire risk mitigation rules against property observations:

@@ -11,8 +11,7 @@ class TestRoofRule:
         
         # Load the latest rules file
         rules_file_path = os.path.join(
-            os.path.dirname(__file__), 
-            '..', 
+            os.path.dirname(os.path.dirname(__file__)), 
             'src', 
             'rules', 
             'fire_risk', 
