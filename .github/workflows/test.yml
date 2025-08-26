@@ -1,4 +1,4 @@
-name: Run Tests
+name: Test and Build
 
 on:
   push:
@@ -46,3 +46,32 @@ jobs:
       with:
         name: test-results-${{ matrix.python-version }}
         path: test-results.xml
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false
+        tags: |
+          rules-engine:latest
+          rules-engine:${{ github.sha }}
+        outputs: type=docker,dest=/tmp/rules-engine.tar
+
+    - name: Upload Docker image artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rules-engine-image
+        path: /tmp/rules-engine.tar
+        retention-days: 30
