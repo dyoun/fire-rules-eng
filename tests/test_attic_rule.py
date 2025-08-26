@@ -9,15 +9,21 @@ class TestAtticRule:
     def setup_method(self):
         self.engine = zen.ZenEngine()
         
-        # Load the latest rules file
-        rules_file_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), 
-            'src', 
-            'rules', 
-            'fire_risk', 
-            'latest', 
-            'fire_risk.json'
-        )
+        # Try multiple paths to find the rules file
+        possible_paths = [
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), 'src', 'rules', 'fire_risk', 'latest', 'fire_risk.json'),
+            os.path.join(os.getcwd(), 'src', 'rules', 'fire_risk', 'latest', 'fire_risk.json'),
+            os.path.join(os.getcwd(), 'src', 'rules', 'fire_risk', '3', 'fire_risk.json')
+        ]
+        
+        rules_file_path = None
+        for path in possible_paths:
+            if os.path.exists(path):
+                rules_file_path = path
+                break
+        
+        if rules_file_path is None:
+            raise FileNotFoundError("Could not find fire_risk.json in any expected location")
         
         with open(rules_file_path, 'r') as f:
             self.rule_content = f.read()
