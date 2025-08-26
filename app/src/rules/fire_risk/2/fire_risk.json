@@ -1,0 +1,404 @@
+{
+  "contentType": "application/vnd.gorules.decision",
+  "nodes": [
+    {
+      "id": "ac18a9d7-d86b-436a-823f-91596796f45c",
+      "name": "request",
+      "type": "inputNode",
+      "content": {
+        "schema": ""
+      },
+      "position": {
+        "x": 95,
+        "y": 215
+      }
+    },
+    {
+      "id": "9d1dd068-2dc5-4c54-9c8e-09193a3e9719",
+      "name": "Attic Vents",
+      "type": "decisionTableNode",
+      "content": {
+        "rules": [
+          {
+            "_id": "64742493-45b5-443c-bf0c-33861cb4b8c3",
+            "_description": "Ensure all vents, chimneys, and screens can withstand embers\n(i.e., should be ember-rated)",
+            "001bcb90-443f-4dc7-8205-6be4c79b1643": "\"Add Vents\"",
+            "55aef83f-2f90-4584-b341-3c6db07d1423": "false"
+          }
+        ],
+        "inputs": [
+          {
+            "id": "55aef83f-2f90-4584-b341-3c6db07d1423",
+            "name": "Input",
+            "field": "attic_vent_screens"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "001bcb90-443f-4dc7-8205-6be4c79b1643",
+            "name": "Output",
+            "field": "mitigations"
+          }
+        ],
+        "hitPolicy": "first",
+        "inputField": null,
+        "outputPath": null,
+        "passThrough": true,
+        "executionMode": "single"
+      },
+      "position": {
+        "x": 690,
+        "y": 20
+      }
+    },
+    {
+      "id": "7669b638-1e07-4acb-b618-20c0d3d73d3a",
+      "name": "Roof",
+      "type": "decisionTableNode",
+      "content": {
+        "rules": [
+          {
+            "_id": "ad7ad5bd-4efd-472e-85f7-1f9a7d7270ac",
+            "_description": "Ensure roof is Class A by assembly, free of gaps, and well maintained.\nIn low wildfire areas (Category A) roofs can be Class B or Class A",
+            "29c541ae-7364-4c85-9e8c-26a25d4e3172": "",
+            "34818d50-736d-4c95-aa3a-254169757aa2": "\"\"",
+            "b5bfa28f-5d1b-47f3-abe6-55cfab0f538a": "\"a\""
+          },
+          {
+            "_id": "553c5523-097c-4ddd-ba2b-74e9bdbd4e7c",
+            "_description": "",
+            "29c541ae-7364-4c85-9e8c-26a25d4e3172": "\"a\"",
+            "34818d50-736d-4c95-aa3a-254169757aa2": "\"\"",
+            "b5bfa28f-5d1b-47f3-abe6-55cfab0f538a": "\"b\""
+          },
+          {
+            "_id": "e8be3855-78d0-4c13-9e3a-420b160d5f6a",
+            "_description": "",
+            "29c541ae-7364-4c85-9e8c-26a25d4e3172": "",
+            "34818d50-736d-4c95-aa3a-254169757aa2": "\"No Mitigation\"",
+            "b5bfa28f-5d1b-47f3-abe6-55cfab0f538a": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "b5bfa28f-5d1b-47f3-abe6-55cfab0f538a",
+            "name": "Input",
+            "field": "roof_type"
+          },
+          {
+            "id": "29c541ae-7364-4c85-9e8c-26a25d4e3172",
+            "name": "New field",
+            "field": "wild_fire_risk"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "34818d50-736d-4c95-aa3a-254169757aa2",
+            "name": "Output",
+            "field": "mitigations"
+          }
+        ],
+        "hitPolicy": "first",
+        "inputField": null,
+        "outputPath": null,
+        "passThrough": true,
+        "executionMode": "single"
+      },
+      "position": {
+        "x": 690,
+        "y": 95
+      }
+    },
+    {
+      "id": "9eec2884-0c0c-494a-863c-2ed9c22088f6",
+      "name": "Windows",
+      "type": "decisionTableNode",
+      "content": {
+        "rules": [
+          {
+            "_id": "7c9a5009-7129-4ae0-b01c-1b871de67565",
+            "_description": "safe_distance = 30",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"tree\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "safe_distance",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"single\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 3) - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 3)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "7c401eb1-fd83-4b14-9d97-c39d6777ddf2",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"shrubs\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"single\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 3) / 2 - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 3)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "73e449c6-7dc4-4e83-a413-75b755e6c5bd",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"grass\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"single\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 3) / 3 - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 3)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "d41e518e-a710-4831-8bf8-f5d2d7b200de",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"tree\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "safe_distance",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"double\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 2) - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 2)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "ac8b9552-8e73-4915-b46b-88220d117a55",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"shrubs\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"double\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 2) / 2 - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 2)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "fa6c64d7-f503-4bd9-bd52-41515bf5bc0e",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"grass\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"double\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance * 2) / 3 - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance * 2)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "41e7cb9c-4f8b-434c-8dac-b9b51bdaf57e",
+            "_description": "Safe Window Distance for Tempered Glass from Trees is 30 feet",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"tree\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"tempered\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "safe_distance - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "safe_distance",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "ed7ade00-4dc7-4c0a-a93e-0f76ccb0117b",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"shrubs\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"tempered\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance / 2) - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance / 2)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          },
+          {
+            "_id": "28f13cfd-f7df-4279-a814-86aa3acade1f",
+            "_description": "",
+            "3ad0a94c-c645-4e85-9a32-19f03ed4de38": "\"grass\"",
+            "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411": "",
+            "61be7fe5-c65d-46d7-be64-bc389fe8c9da": "",
+            "75102330-5b47-46ba-85bd-66f8c5ddd03c": "\"tempered\"",
+            "b8eb5a08-d1a3-4da1-9030-b448b1e9d128": "(safe_distance / 3) - distance",
+            "d035d20a-494d-493b-a563-a395d33072a8": "(safe_distance / 3)",
+            "f08a5ab0-6acb-433b-b210-08057a2da366": ""
+          }
+        ],
+        "inputs": [
+          {
+            "id": "75102330-5b47-46ba-85bd-66f8c5ddd03c",
+            "name": "Input",
+            "field": "window_type"
+          },
+          {
+            "id": "3ad0a94c-c645-4e85-9a32-19f03ed4de38",
+            "name": "Input",
+            "field": "vegetation_type"
+          },
+          {
+            "id": "61be7fe5-c65d-46d7-be64-bc389fe8c9da",
+            "name": "Input",
+            "field": "distance"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "4bfd7bb2-8b5c-4e9d-a3a1-3933877fb411",
+            "name": "Output",
+            "field": "safe_distance_base"
+          },
+          {
+            "id": "d035d20a-494d-493b-a563-a395d33072a8",
+            "name": "Output",
+            "field": "safe_distance_calc"
+          },
+          {
+            "id": "b8eb5a08-d1a3-4da1-9030-b448b1e9d128",
+            "name": "Output",
+            "field": "safe_distance_diff"
+          },
+          {
+            "id": "f08a5ab0-6acb-433b-b210-08057a2da366",
+            "name": "Output",
+            "field": "mitigations"
+          }
+        ],
+        "hitPolicy": "first",
+        "inputField": null,
+        "outputPath": null,
+        "passThrough": true,
+        "executionMode": "single"
+      },
+      "position": {
+        "x": 950,
+        "y": 195
+      }
+    },
+    {
+      "id": "418ebdd8-95d7-46f5-9aa9-1918a474127f",
+      "name": "switch1",
+      "type": "switchNode",
+      "content": {
+        "hitPolicy": "first",
+        "statements": [
+          {
+            "id": "f271b7a4-da7f-4dbd-8b1d-d5c75213052d",
+            "condition": "risk_type == \"attic\"",
+            "isDefault": false
+          },
+          {
+            "id": "d28ddeeb-4593-4056-8228-d8c0ac63bf7e",
+            "condition": "risk_type == \"roof\"",
+            "isDefault": false
+          },
+          {
+            "id": "6f5f5a0e-1be0-46e2-8f6a-456cae26156e",
+            "condition": "risk_type == \"windows\"",
+            "isDefault": false
+          },
+          {
+            "id": "d470acf2-e1c7-4d0c-a052-021b6e1ff04a",
+            "condition": "",
+            "isDefault": true
+          }
+        ]
+      },
+      "position": {
+        "x": 380,
+        "y": -45
+      }
+    },
+    {
+      "id": "4710c981-28d6-48c7-bbff-39994bd6d8f1",
+      "name": "safe_distance",
+      "type": "expressionNode",
+      "content": {
+        "inputField": null,
+        "outputPath": null,
+        "expressions": [
+          {
+            "id": "b6d29b01-c2c2-4b82-8900-b697a9812d6e",
+            "key": "safe_distance",
+            "value": "30"
+          }
+        ],
+        "passThrough": true,
+        "executionMode": "single"
+      },
+      "position": {
+        "x": 690,
+        "y": 195
+      }
+    },
+    {
+      "id": "a008ceda-0878-48ce-8253-60503ee98617",
+      "name": "Mitigations",
+      "type": "decisionTableNode",
+      "content": {
+        "rules": [
+          {
+            "_id": "c697883c-ea73-428c-b091-43d7adafda60",
+            "_description": "",
+            "01e68008-e17c-4b2a-ab60-4fe92633456e": "{\n  \"full\": [\n    \"Remove Vegetation\",\n    \"Replace window with Tempered Glass\"\n  ],\n  \"bridge\": [\n    \"Apply a Film to windows which decreases minimum safe distance by 20%\",\n    \"Apply flame retardants to shrubs that decrease minimum safe distance by 25%\",\n    \"Prune trees to a safe height decreases safe distance by 50%\"\n  ]\n}\n",
+            "a66a82db-25d1-4393-b6b9-9fbb268dd9d8": "> 0"
+          }
+        ],
+        "inputs": [
+          {
+            "id": "a66a82db-25d1-4393-b6b9-9fbb268dd9d8",
+            "name": "Input",
+            "field": "safe_distance_diff"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "01e68008-e17c-4b2a-ab60-4fe92633456e",
+            "name": "Output",
+            "field": "mitigations"
+          }
+        ],
+        "hitPolicy": "first",
+        "inputField": null,
+        "outputPath": null,
+        "passThrough": true,
+        "executionMode": "single"
+      },
+      "position": {
+        "x": 1200,
+        "y": 195
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "1df90293-5334-4e19-ae66-79b66e8c9bdf",
+      "type": "edge",
+      "sourceId": "ac18a9d7-d86b-436a-823f-91596796f45c",
+      "targetId": "418ebdd8-95d7-46f5-9aa9-1918a474127f"
+    },
+    {
+      "id": "ede9e092-50e4-4b6c-af0c-5d4a6b79922f",
+      "type": "edge",
+      "sourceId": "418ebdd8-95d7-46f5-9aa9-1918a474127f",
+      "targetId": "9d1dd068-2dc5-4c54-9c8e-09193a3e9719",
+      "sourceHandle": "f271b7a4-da7f-4dbd-8b1d-d5c75213052d"
+    },
+    {
+      "id": "37d7c53e-c961-40ed-ab11-d8002f729857",
+      "type": "edge",
+      "sourceId": "418ebdd8-95d7-46f5-9aa9-1918a474127f",
+      "targetId": "7669b638-1e07-4acb-b618-20c0d3d73d3a",
+      "sourceHandle": "d28ddeeb-4593-4056-8228-d8c0ac63bf7e"
+    },
+    {
+      "id": "5f344684-bd04-47b7-ae68-397846b82676",
+      "type": "edge",
+      "sourceId": "418ebdd8-95d7-46f5-9aa9-1918a474127f",
+      "targetId": "4710c981-28d6-48c7-bbff-39994bd6d8f1",
+      "sourceHandle": "6f5f5a0e-1be0-46e2-8f6a-456cae26156e"
+    },
+    {
+      "id": "c3056210-a61e-41e8-81bc-6059a137965e",
+      "type": "edge",
+      "sourceId": "4710c981-28d6-48c7-bbff-39994bd6d8f1",
+      "targetId": "9eec2884-0c0c-494a-863c-2ed9c22088f6"
+    },
+    {
+      "id": "2ed1e6bf-1d81-4056-87c4-4835ae753aaa",
+      "type": "edge",
+      "sourceId": "9eec2884-0c0c-494a-863c-2ed9c22088f6",
+      "targetId": "a008ceda-0878-48ce-8253-60503ee98617"
+    }
+  ]
+}
