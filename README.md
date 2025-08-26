@@ -1,6 +1,6 @@
-# Overview
+# Rules Engine Python API
 
-Python API service to compute observations against rules.
+Python API service for evaluating fire risk mitigation rules against property observations.
 
 ## Installation and Setup
 
@@ -10,9 +10,9 @@ Python API service to compute observations against rules.
 
 ### Installation
 
-1. Clone or navigate to the project directory:
+1. Navigate to the project directory:
    ```bash
-   cd app
+   cd rules-engine-project/app/rules-eng-python
    ```
 
 2. Install dependencies:
@@ -50,22 +50,115 @@ python main.py
 
 This application demonstrates clean architecture principles with clear separation of concerns across multiple layers.
 
+### System Architecture Diagram
+
+```mermaid
+classDiagram
+    %% Domain Layer - Models
+    class RuleEvaluationRequest {
+        +observations: Union[Dict, List[Dict]]
+        +version: Optional[str]
+        +request_id: Optional[str]
+    }
+    
+    class RuleEvaluationResult {
+        +result: Union[Dict, List[Dict]]
+        +performance: str
+        +timestamp: datetime
+        +api_version: str
+        +request_id: Optional[str]
+        +__post_init__()
+    }
+    
+    %% Domain Layer - Interfaces
+    class IRulesService {
+        <<interface>>
+        +evaluate_fire_risk(request: RuleEvaluationRequest)* RuleEvaluationResult
+    }
+    
+    class IRulesRepository {
+        <<interface>>
+        +get_fire_risk_rules()* str
+    }
+    
+    %% Application Layer - Services
+    class RulesService {
+        -engine: ZenEngine
+        -rules_base_path: str
+        +__init__(rules_base_path: str)
+        +get_available_versions() List[str]
+        +get_latest_version() str
+        +load_rules_by_version(version: str) str
+        +evaluate_fire_risk(request: RuleEvaluationRequest) RuleEvaluationResult
+    }
+    
+    class FireMitigationService {
+        -rules_api_base_url: str
+        +__init__(rules_api_base_url: str)
+        +submit_property_observations(property_id, observations, version) Dict
+        +create_sample_observations() List[Dict]
+        +process_property_risk_assessment(property_id, ...) Dict
+    }
+    
+    %% Presentation Layer - Controllers
+    class RulesController {
+        +get_available_versions() Response
+        +evaluate_rules_latest() Response
+        +evaluate_rules_versioned(version: str) Response
+    }
+    
+    %% Infrastructure Layer - Container
+    class Container {
+        +wiring_config: WiringConfiguration
+        +rules_service: Factory
+        +greeting_service: Factory
+        +greeting_repository: Singleton
+    }
+    
+    %% Relationships
+    RulesService ..|> IRulesService : implements
+    RulesController --> IRulesService : depends on
+    RulesController --> RuleEvaluationRequest : uses
+    RulesController --> RuleEvaluationResult : uses
+    RulesService --> RuleEvaluationRequest : uses
+    RulesService --> RuleEvaluationResult : creates
+    Container --> RulesService : provides
+    Container --> IRulesService : binds
+    FireMitigationService --> RulesController : calls API
+    
+    %% Layer grouping
+    classDef domainModel fill:#e1f5fe
+    classDef domainInterface fill:#f3e5f5
+    classDef applicationService fill:#e8f5e8
+    classDef presentationLayer fill:#fff3e0
+    classDef infrastructureLayer fill:#fce4ec
+    
+    class RuleEvaluationRequest domainModel
+    class RuleEvaluationResult domainModel
+    class IRulesService domainInterface
+    class IRulesRepository domainInterface
+    class RulesService applicationService
+    class FireMitigationService applicationService
+    class RulesController presentationLayer
+    class Container infrastructureLayer
+```
+
 ### SOLID Principles Applied
 
 - **Single Responsibility Principle (SRP)**: Each class has one reason to change
-  - `Greeting` model only handles greeting data
-  - `GreetingService` only handles business logic
-  - `GreetingRepository` only handles data access
+  - `RuleEvaluation` model only handles rule evaluation data
+  - `RulesService` only handles business logic
+  - Repository classes only handle data access
 
 - **Open/Closed Principle (OCP)**: Open for extension, closed for modification
   - New repository implementations can be added without changing existing code
-  - New greeting types can be added by extending the service
+  - New rule types can be added by extending the service
 
 - **Liskov Substitution Principle (LSP)**: Objects should be replaceable with instances of their subtypes
-  - `InMemoryGreetingRepository` can be replaced with any `IGreetingRepository` implementation
+  - Any `IRulesRepository` implementation can be substituted
 
 - **Interface Segregation Principle (ISP)**: Many client-specific interfaces are better than one general-purpose interface
-  - `IGreetingRepository` and `IGreetingService` are focused, single-purpose interfaces
+  - `IRulesRepository` and `IRulesService` are focused, single-purpose interfaces
 
 - **Dependency Inversion Principle (DIP)**: Depend on abstractions, not concretions
   - Services depend on repository interfaces, not concrete implementations
@@ -73,15 +166,15 @@ This application demonstrates clean architecture principles with clear separatio
 
 ### Enterprise Design Patterns
 
-- **Repository Pattern**: Abstracts data access logic (`IGreetingRepository`)
-- **Service Layer Pattern**: Encapsulates business logic (`GreetingService`)
+- **Repository Pattern**: Abstracts data access logic (`IRulesRepository`)
+- **Service Layer Pattern**: Encapsulates business logic (`RulesService`)
 - **Dependency Injection**: Manages object dependencies via DI container
 - **Layered Architecture**: Clear separation between domain, application, infrastructure, and presentation layers
 
 ## Project Structure
 
 ```
-app/
+rules-eng-python/
 ├── src/
 │   ├── domain/                 # Domain layer (entities, interfaces)
 │   │   ├── models/
@@ -91,7 +184,8 @@ app/
 │   │       └── rules_service.py        # Rules service contract
 │   ├── application/            # Application layer (business logic)
 │   │   └── services/
-│   │       └── rules_service.py        # Rules evaluation logic
+│   │       ├── rules_service.py        # Rules evaluation logic
+│   │       └── fire_mitigation_service.py  # Fire mitigation logic
 │   ├── infrastructure/         # Infrastructure layer (data access)
 │   │   └── repositories/
 │   ├── presentation/           # Presentation layer (API controllers)
@@ -123,40 +217,67 @@ app/
   - Request body: 
     ```json
     {
-      "observations": {
-        "risk_type": "windows",
-        "window_type": "tempered",
-        "vegetation_type": "tree",
-        "distance": 15
-      },
-      "request_id": "optional-request-id"
-    }
+        "observations": [
+            {
+                "risk_type": "windows",
+                "window_type": "single",
+                "vegetation_type": "tree",
+                "distance": 80
+            },
+            {
+                "risk_type": "attic",
+                "attic_vent_screens": false
+            },
+            {
+                "risk_type": "roof",
+                "roof_type": "c",
+                "wild_fire_risk": "a"
+            }
+        ],
+        "property_id": 1
+    }    
     ```
   - Response:
     ```json
-    {                                                                         
-      "performance": "83.7µs",                                                
-      "request_id": "test-005",                                               
-      "result": {                                                             
-        "calc_safe_distance": 15,                                             
-        "distance": 15,                                                       
-        "mitigations": {
-          "Bridge": [                                
-            "Apply a Film to windows which decreases minimum safe distance by 20%",
-            "Apply flame retardants to shrubs that decrease minimum safe distance by 25%",
-            "Prune trees to a safe height decreases safe distance by 50%"
-          ],
-          "Full": [                     
-            "Remove Vegetation",
-            "Replace window with Tempered Glass"
-          ]
-        },
-        "risk_type": "windows",
-        "safe_distance": 30,
-        "vegetation_type": "tree",
-        "window_type": "tempered"
-      },
-      "timestamp": "2025-08-24T22:37:46.022937"
+    {
+        "api_version": "3",
+        "performance": "116.6µs",
+        "property_id": 1,
+        "result": [
+            {
+                "distance": 80,
+                "mitigations": {
+                    "bridge": [
+                        "Apply a Film to windows which decreases minimum safe distance by 20%",
+                        "Apply flame retardants to shrubs that decrease minimum safe distance by 25%",
+                        "Prune trees to a safe height decreases safe distance by 50%"
+                    ],
+                    "full": [
+                        "Remove Vegetation",
+                        "Replace window with Tempered Glass"
+                    ]
+                },
+                "risk_type": "windows",
+                "safe_distance": 30,
+                "safe_distance_base": 30,
+                "safe_distance_calc": 90,
+                "safe_distance_diff": 10,
+                "vegetation_type": "tree",
+                "window_type": "single"
+            },
+            {
+                "attic_vent_screens": false,
+                "mitigations": "Add Vents",
+                "risk_type": "attic"
+            },
+            {
+                "mitigations": "No Mitigation",
+                "risk_type": "roof",
+                "roof_type": "c",
+                "wild_fire_risk": "a"
+            }
+        ],
+        "timestamp": "2025-08-26T02:16:45.879520"
     }
     ```
     
@@ -185,16 +306,6 @@ app/
 - Docker containerization
 - CI/CD pipeline
 
-Total cost:            $0.4066
-Total duration (API):  2m 51.0s
-Total duration (wall): 12m 5.6s
-Total code changes:    452 lines added, 0 lines removed
-Usage by model:
-    claude-3-5-haiku:  2.2k input, 143 output, 0 cache read, 0 cache write
-       claude-sonnet:  51 input, 8.5k output, 737.2k cache read, 14.7k cache write
-
-
 ## Sources
-* Rules API Service
-* [Rules UI Interface to Administer Rules](https://hub.docker.com/r/gorules/brms)
-* https://gorules.io/pricing
+* [GoRules BRMS - Rules UI Interface](https://hub.docker.com/r/gorules/brms)
+* [GoRules Pricing](https://gorules.io/pricing)
