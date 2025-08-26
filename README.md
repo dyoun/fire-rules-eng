@@ -284,7 +284,7 @@ rules-eng-python/
     
 ## Testing
 
-![Tests Passing](https://github.com/your-username/fire-rules-eng/actions/workflows/test.yml/badge.svg)
+![Tests Passing](https://github.com/dyoun/fire-rules-eng/actions/workflows/test.yml/badge.svg)
 
 The project includes comprehensive unit tests for the zen rules engine:
 
