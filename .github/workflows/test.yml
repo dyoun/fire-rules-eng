@@ -31,13 +31,13 @@ jobs:
     - name: Run tests with pytest
       run: |
         export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-        pytest tests/ -v --tb=short
+        python -m pytest tests/ -v --tb=short
     
     - name: Generate test report
       if: always()
       run: |
         export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-        pytest tests/ --junitxml=test-results.xml
+        python -m pytest tests/ --junitxml=test-results.xml
     
     - name: Upload test results
       if: always()
