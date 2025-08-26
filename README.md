@@ -282,11 +282,29 @@ rules-eng-python/
     ```
 - **POST** `/rules/versions/:id`
     
+## Testing
+
+![Tests Passing](https://github.com/your-username/fire-rules-eng/actions/workflows/test.yml/badge.svg)
+
+The project includes comprehensive unit tests for the zen rules engine:
+
+- **test_attic_rule.py**: Tests attic ventilation screen evaluations
+- **test_roof_rule.py**: Tests roof type and wildfire risk evaluations  
+- **test_window_rule.py**: Tests window safety distance calculations
+
+Run tests locally:
+```bash
+pytest tests/ -v
+```
+
 ## Dependencies
 
 - **Flask 3.0.0**: Web framework
 - **dependency-injector 4.41.0**: Dependency injection container
 - **Werkzeug 3.0.1**: WSGI utilities (Flask dependency)
+- **zen-engine 0.49.1**: Rules evaluation engine
+- **pytest 8.4.1**: Testing framework
+- **requests 2.31.0**: HTTP library
 
 ## Design Benefits
 
