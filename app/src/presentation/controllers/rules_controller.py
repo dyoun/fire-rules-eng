@@ -60,7 +60,7 @@ def evaluate_rules_latest(
         rule_request = RuleEvaluationRequest(
             observations=observations,
             version=None,  # This will use latest version
-            request_id=data.get('request_id')
+            request_id=data.get('property_id')
         )
         
         # Evaluate rules
@@ -72,7 +72,7 @@ def evaluate_rules_latest(
             'performance': result.performance,
             'timestamp': result.timestamp.isoformat(),
             'api_version': result.api_version,
-            'request_id': result.request_id
+            'property_id': result.request_id
         }), 200
         
     except ValueError as e:
@@ -117,7 +117,7 @@ def evaluate_rules_versioned(
         rule_request = RuleEvaluationRequest(
             observations=observations,
             version=version,
-            request_id=data.get('request_id')
+            request_id=data.get('property_id')
         )
         
         # Evaluate rules
@@ -129,7 +129,7 @@ def evaluate_rules_versioned(
             'performance': result.performance,
             'timestamp': result.timestamp.isoformat(),
             'api_version': result.api_version,
-            'request_id': result.request_id
+            'property_id': result.request_id
         }), 200
         
     except ValueError as e:
