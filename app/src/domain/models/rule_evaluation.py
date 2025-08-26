@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 from datetime import datetime
 
 
@@ -7,7 +7,7 @@ from datetime import datetime
 class RuleEvaluationRequest:
     """Domain model representing a rules evaluation request."""
     
-    observations: Dict[str, Any]
+    observations: Union[Dict[str, Any], List[Dict[str, Any]]]
     version: Optional[str] = None
     request_id: Optional[str] = None
 
@@ -16,7 +16,7 @@ class RuleEvaluationRequest:
 class RuleEvaluationResult:
     """Domain model representing a rules evaluation result."""
     
-    result: Dict[str, Any]
+    result: Union[Dict[str, Any], List[Dict[str, Any]]]
     performance: str
     timestamp: datetime
     api_version: str

@@ -44,9 +44,21 @@ def evaluate_rules_latest(
         if 'observations' not in data:
             return jsonify({'error': 'Missing required field: observations'}), 400
         
+        # Validate observations format (must be dict or array of dicts)
+        observations = data['observations']
+        if not isinstance(observations, (dict, list)):
+            return jsonify({'error': 'observations must be an object or array of objects'}), 400
+        
+        if isinstance(observations, list):
+            if not observations:
+                return jsonify({'error': 'observations array cannot be empty'}), 400
+            for i, obs in enumerate(observations):
+                if not isinstance(obs, dict):
+                    return jsonify({'error': f'observations[{i}] must be an object'}), 400
+        
         # Create domain request object with latest version (None will default to latest)
         rule_request = RuleEvaluationRequest(
-            observations=data['observations'],
+            observations=observations,
             version=None,  # This will use latest version
             request_id=data.get('request_id')
         )
@@ -89,9 +101,21 @@ def evaluate_rules_versioned(
         if 'observations' not in data:
             return jsonify({'error': 'Missing required field: observations'}), 400
         
+        # Validate observations format (must be dict or array of dicts)
+        observations = data['observations']
+        if not isinstance(observations, (dict, list)):
+            return jsonify({'error': 'observations must be an object or array of objects'}), 400
+        
+        if isinstance(observations, list):
+            if not observations:
+                return jsonify({'error': 'observations array cannot be empty'}), 400
+            for i, obs in enumerate(observations):
+                if not isinstance(obs, dict):
+                    return jsonify({'error': f'observations[{i}] must be an object'}), 400
+        
         # Create domain request object
         rule_request = RuleEvaluationRequest(
-            observations=data['observations'],
+            observations=observations,
             version=version,
             request_id=data.get('request_id')
         )

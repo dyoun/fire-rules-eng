@@ -69,12 +69,33 @@ class RulesService(IRulesService):
             # Create decision from rule definition
             decision = self.engine.create_decision(rule_json)
 
-            # Evaluate against observations
-            result = decision.evaluate(request.observations)
+            # Handle both single observation and array of observations
+            if isinstance(request.observations, list):
+                # Process array of observations
+                results = []
+                total_performance_time = 0
+                
+                for observation in request.observations:
+                    result = decision.evaluate(observation)
+                    results.append(result.get('result', {}))
+                    
+                    # Parse performance time for aggregation
+                    perf_str = result.get('performance', '0µs')
+                    if 'µs' in perf_str:
+                        time_val = float(perf_str.replace('µs', ''))
+                        total_performance_time += time_val
+                
+                final_result = results
+                performance_str = f"{total_performance_time:.1f}µs"
+            else:
+                # Process single observation
+                result = decision.evaluate(request.observations)
+                final_result = result.get('result', {})
+                performance_str = result.get('performance', '')
 
             return RuleEvaluationResult(
-                result=result.get('result', {}),
-                performance=result.get('performance', ''),
+                result=final_result,
+                performance=performance_str,
                 timestamp=datetime.utcnow(),
                 api_version=version_to_use,
                 request_id=request.request_id
