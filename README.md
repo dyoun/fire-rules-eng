@@ -2,6 +2,34 @@
 
 ## Quickstart
 
+### Docker (Recommended)
+
+Pull and run the latest Docker image:
+```shell
+# Pull the latest image from GitHub Container Registry
+docker pull ghcr.io/dyoun/rules-engine:latest
+
+# Run the container
+docker run -d \
+  --name rules-engine \
+  -p 5000:5000 \
+  -e LICENSE_KEY=your_license_key_here \
+  ghcr.io/dyoun/rules-engine:latest
+
+# Test the API
+curl --location 'http://localhost:5000/rules/latest' \
+--header 'Content-Type: application/json' \
+--data '{
+    "observations": {
+        "risk_type": "attic",
+        "attic_vent_screens": false
+    },
+    "property_id": 1
+}'
+```
+
+### Local Development
+
 Prerequisites:
 - Python 3.10+
 - pip
@@ -20,6 +48,8 @@ curl --location 'http://localhost:5000/rules/latest' \
     "property_id": 1
 }'
 ```
+
+### Rules Editor (Optional)
 
 [Rules Editor startup](https://hub.docker.com/r/gorules/brms):
 ```shell
