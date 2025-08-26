@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  admin:
+    image: 'gorules/brms'
+    ports:
+      - '9080:80'
+    depends_on:
+      - pg-database
+    environment:
+      DB_HOST: pg-database
+      DB_PORT: 5432
+      DB_USER: go_rules
+      DB_PASSWORD: go_rules
+      DB_NAME: go_rules
+      DB_SSL_DISABLED: "true"
+      LICENSE_KEY: '' # Obtain it from https://portal.gorules.io
+
+  pg-database:
+    image: 'postgres'
+    environment:
+      POSTGRES_USER: go_rules
+      POSTGRES_PASSWORD: go_rules
+      POSTGRES_DB: go_rules
+    ports:
+      - '5433:5432'

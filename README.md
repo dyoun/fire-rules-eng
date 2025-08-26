@@ -1,35 +1,36 @@
-# Rules Engine Python API
+# Rules Engine Python API & Editor
 
-Python API service for evaluating fire risk mitigation rules against property observations.
+## Quickstart
 
-## Installation and Setup
-
-### Prerequisites
+Prerequisites:
 - Python 3.8+
 - pip
 
-### Installation
-
-1. Navigate to the project directory:
-   ```bash
-   cd rules-engine-project/app/rules-eng-python
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Running the Application
-
-Start the development server:
-```bash
+Python API service for evaluating fire risk mitigation rules against property observations:
+```shell
+pip install -r requirements.txt
 python main.py
+curl --location 'http://localhost:5000/rules/latest' \
+--header 'Content-Type: application/json' \
+--data '{
+    "observations": {
+        "risk_type": "attic",
+        "attic_vent_screens": false
+    },
+    "property_id": 1
+}'
 ```
 
-The API will be available at `http://localhost:5000`
+[Rules Editor startup](https://hub.docker.com/r/gorules/brms):
+```shell
+docker-compose up
+# NOTE: obtain license key from https://portal.gorules.io/signin
+# http://localhost:9080/
+```
 
-### Configuration
+Additionally, `rules_playground.ipynb` is a notebook where the rules engine can be interacted with directly via code.
+
+### API Configuration
 
 The application can be configured using environment variables:
 
@@ -196,7 +197,6 @@ rules-eng-python/
 │       ├── container.py       # Dependency injection container
 │       └── settings.py        # Application settings
 ├── tests/                     # Test directory
-├── fire-risk.json            # Sample rule definition
 ├── observations.json         # Sample input data
 ├── run-rules.ipynb          # Jupyter notebook example
 ├── requirements.txt         # Python dependencies
@@ -212,7 +212,7 @@ rules-eng-python/
   - Response: `{"status": "healthy", "service": "rules-engine-api"}`
 
 ### Rules Engine
-- **POST** `/rules/`
+- **POST** `/rules/latest`
   - Evaluates rules against provided observations
   - Request body: 
     ```json
@@ -280,6 +280,7 @@ rules-eng-python/
         "timestamp": "2025-08-26T02:16:45.879520"
     }
     ```
+- **POST** `/rules/versions/:id`
     
 ## Dependencies
 
@@ -297,11 +298,9 @@ rules-eng-python/
 
 ## Future Enhancements
 
-- Database integration (PostgreSQL, MongoDB)
 - Authentication and authorization
 - Input validation and error handling middleware
 - Logging and monitoring
-- API documentation with OpenAPI/Swagger
 - Unit and integration tests
 - Docker containerization
 - CI/CD pipeline
