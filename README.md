@@ -163,15 +163,6 @@ classDiagram
     classDef applicationService fill:#e8f5e8
     classDef presentationLayer fill:#fff3e0
     classDef infrastructureLayer fill:#fce4ec
-    
-    class RuleEvaluationRequest domainModel
-    class RuleEvaluationResult domainModel
-    class IRulesService domainInterface
-    class IRulesRepository domainInterface
-    class RulesService applicationService
-    class FireMitigationService applicationService
-    class RulesController presentationLayer
-    class Container infrastructureLayer
 ```
 
 ### SOLID Principles Applied
